@@ -66,7 +66,7 @@ async def on_ready():
         headers={"Authorization": f"Bearer {os.environ['PAWAN_KEY']}"})
     channel = await bot.fetch_channel(announce)
     if response.status_code != 200 or response.json()["status"] == False:
-        await channel.send(f"🟡 PAWAN models may not work! {response.status_code} {response.json()['status']}")
+        await channel.send(f"🟡 PAWAN models may not work! {response.status_code} {response.json()}")
 @bot.event
 async def on_command(ctx):
     stats = await loader.load_file(STATS_FILE)
