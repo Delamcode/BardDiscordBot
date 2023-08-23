@@ -6,3 +6,4 @@ BingImageCreator
 openai
 GoogleBard
 flask
+psutil
