@@ -1,0 +1,8 @@
+requests
+py-cord
+python_dotenv
+aiohttp
+BingImageCreator
+openai
+GoogleBard
+flask
