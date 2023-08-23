@@ -18,8 +18,8 @@ import aiohttp
 import BingImageCreator
 import openai
 import models
-import pyfirefly
-from pyfirefly.utils import ImageOptions
+#import pyfirefly
+#from pyfirefly.utils import ImageOptions
 import psutil
 import sys
 
@@ -40,7 +40,7 @@ BARD_KEY = os.getenv('BARD_KEY')
 BARD_KEY_TS = os.getenv('BARD_KEY_TS')
 BING_TOKEN = os.getenv('BING_KEY')
 REPLICATE_TOKEN = os.getenv('REPLICATE_TOKEN')
-firefly_client = "x"
+#firefly_client = "x"
 video_settings = {}
 
 async def get_drafts(info):
