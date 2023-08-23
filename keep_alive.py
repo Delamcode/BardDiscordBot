@@ -10,10 +10,7 @@ def home():
 	return 'Running Bot'
 
 def run():
-  app.run(
-		host='0.0.0.0',
-		port=random.randint(2000,9000)
-	)
+  app.run(host='0.0.0.0', port=6435)
 
 def keep_alive():
 	'''
