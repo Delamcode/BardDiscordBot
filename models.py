@@ -135,16 +135,19 @@ models = {
     "img_models": {
         "bing": {
             "showname": "Bing Image Creator",
+            "id": "bing",
             "description": "Bing's image creator based on Dall-e 2.",
             "enabled": True,
         },
         "kandinsky": {
             "showname": "Kandinsky",
+            "id": "kandinsky-r",
             "description": "A multilingual text2image latent diffusion model.",
             "enabled": True,
         },
         "if": {
             "showname": "Deepfloyd IF",
+            "id": "if",
             "description": "A state-of-the-art text-to-image synthesis model, very good at text.",
             "enabled": True,
         },
@@ -153,28 +156,33 @@ models = {
             "description": "Unknown",
             "enabled": False,
         },
-        "firefly": {
-            "showname": "Adobe FireFly",
-            "description": "Unknown",
+        "stable diffusion 1.5": {
+            "showname": "Stable Diffusion 1.5",
+            "id": "sd15",
+            "description": "High-Resolution Image Synthesis with Latent Diffusion Models.",
             "enabled": True,
         },
-        "stable diffusion": {
-            "showname": "Stable Diffusion",
+        "stable diffusion 2.1": {
+            "showname": "Stable Diffusion 2.1",
+            "id": "sd21",
             "description": "High-Resolution Image Synthesis with Latent Diffusion Models.",
             "enabled": True,
         },
         "dreamshaper": {
             "showname": "Dreamshaper",
+            "id": "dreamshaper",
             "description": "A high qaulity, stable diffusion based, model.",
             "enabled": True,
         },
         "deliberate": {
             "showname": "Deliberate",
+            "id": "deliberate",
             "description": "Stable diffusion based model, good at details.",
             "enabled": True,
         },
         "SDXL": {
             "showname": "SDXL",
+            "id": "sdxl",
             "description": "SDXL is a text-to-image generative AI model that creates beautiful images.",
             "enabled": True,
         },

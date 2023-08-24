@@ -22,6 +22,7 @@ import models
 #from pyfirefly.utils import ImageOptions
 import psutil
 import sys
+import urllib.parse
 
 load_dotenv()
 
@@ -38,7 +39,6 @@ bot_token = os.environ['BOT_KEY']
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 BARD_KEY = os.getenv('BARD_KEY')
 BARD_KEY_TS = os.getenv('BARD_KEY_TS')
-BING_TOKEN = os.getenv('BING_KEY')
 REPLICATE_TOKEN = os.getenv('REPLICATE_TOKEN')
 #firefly_client = "x"
 video_settings = {}
@@ -242,7 +242,7 @@ async def reset(
 # --------- IMAGINE---------
 @bot.slash_command(description="Generate images")
 @option(name="prompt", required=True, description="Prompt to generate")
-@option(name="model", required=False, choices=['bing', 'kandinsky', 'if', 'firefly', 'stable diffusion', 'dreamshaper', 'deliberate', 'SDXL'])
+@option(name="model", required=False, choices=['bing', 'kandinsky', 'if', 'stable diffusion 1.5', 'stable diffusion 2.1', 'dreamshaper', 'deliberate', 'SDXL', 'dalle'])
 @option(name="num_outputs", required=False, min_value=1, max_value=10, description="Number of outputs - bing is always 4")
 async def imagine(
     ctx: discord.ApplicationContext,
@@ -261,205 +261,25 @@ async def imagine(
             await loader.save_file(user_settings, SETTINGS_FILE)
         if not model:
             model = user_settings[str(ctx.user.id)]["img_model"]
-        if model == "bing":
-            bing_client = BingImageCreator.ImageGenAsync(auth_cookie=BING_TOKEN)
-            output = await bing_client.get_images(prompt)
-        elif model == "if":
-            data = {
-                "version": "639f0cd40c18b992715d00b8d489ff557c2e47de6c61be1fcc38a3c10cfb1ecd",
-                "input": {
-                    "prompt": prompt,
-                    "num_outputs": num_outputs
-                }
-            }
-            headers = {
-                "Authorization": f"Token {REPLICATE_TOKEN}",
-                "Content-Type": "application/json"
-            }
-        
-            async with aiohttp.ClientSession() as session:
-                async with session.post("https://api.replicate.com/v1/predictions", headers=headers, json=data) as response:
-                    response_data = await response.json()
-                    prediction_id = response_data["id"]
-                    prediction_url = f"https://api.replicate.com/v1/predictions/{prediction_id}"
-                
-                    while True:
-                        async with session.get(prediction_url, headers=headers) as prediction_response:
-                            prediction_data = await prediction_response.json()
-                            if prediction_data["status"] == "succeeded":
-                                output = prediction_data["output"]
-                                break
-                            if prediction_data["status"] == "failed":
-                                logs = prediction_data["logs"]
-                                error = prediction_data["error"]
-                                await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
-                                return
-                        await asyncio.sleep(2)
-        elif model == "kandinsky":
-            data = {
-                "version": "ea1addaab376f4dc227f5368bbd8eff901820fd1cc14ed8cad63b29249e9d463",
-                "input": {
-                    "prompt": prompt,
-                    "num_outputs": num_outputs,
-                }
-            }
-            headers = {
-                "Authorization": f"Token {REPLICATE_TOKEN}",
-                "Content-Type": "application/json"
-            }
-        
-            async with aiohttp.ClientSession() as session:
-                async with session.post("https://api.replicate.com/v1/predictions", headers=headers, json=data) as response:
-                    response_data = await response.json()
-                    prediction_id = response_data["id"]
-                    prediction_url = f"https://api.replicate.com/v1/predictions/{prediction_id}"
-                
-                    while True:
-                        async with session.get(prediction_url, headers=headers) as prediction_response:
-                            prediction_data = await prediction_response.json()
-                            if prediction_data["status"] == "succeeded":
-                                output = prediction_data["output"]
-                                break
-                            if prediction_data["status"] == "failed":
-                                logs = prediction_data["logs"]
-                                error = prediction_data["error"]
-                                await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
-                                return
-                        await asyncio.sleep(2)
-        elif model == "SDXL":
-            data = {
-                "version": "2b017d9b67edd2ee1401238df49d75da53c523f36e363881e057f5dc3ed3c5b2",
-                "input": {
-                    "prompt": prompt,
-                    "num_outputs": num_outputs,
-                }
-            }
-            headers = {
-                "Authorization": f"Token {REPLICATE_TOKEN}",
-                "Content-Type": "application/json"
-            }
-        
-            async with aiohttp.ClientSession() as session:
-                async with session.post("https://api.replicate.com/v1/predictions", headers=headers, json=data) as response:
-                    response_data = await response.json()
-                    prediction_id = response_data["id"]
-                    prediction_url = f"https://api.replicate.com/v1/predictions/{prediction_id}"
-                
-                    while True:
-                        async with session.get(prediction_url, headers=headers) as prediction_response:
-                            prediction_data = await prediction_response.json()
-                            if prediction_data["status"] == "succeeded":
-                                output = prediction_data["output"]
-                                break
-                            if prediction_data["status"] == "failed":
-                                logs = prediction_data["logs"]
-                                error = prediction_data["error"]
-                                await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
-                                return
-                        await asyncio.sleep(2)
-        elif model == "stable diffusion":
-            data = {
-                "version": "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",
-                "input": {
-                    "prompt": prompt,
-                    "num_outputs": num_outputs,
-                }
-            }
-            headers = {
-                "Authorization": f"Token {REPLICATE_TOKEN}",
-                "Content-Type": "application/json"
-            }
-        
-            async with aiohttp.ClientSession() as session:
-                async with session.post("https://api.replicate.com/v1/predictions", headers=headers, json=data) as response:
-                    response_data = await response.json()
-                    prediction_id = response_data["id"]
-                    prediction_url = f"https://api.replicate.com/v1/predictions/{prediction_id}"
-                
-                    while True:
-                        async with session.get(prediction_url, headers=headers) as prediction_response:
-                            prediction_data = await prediction_response.json()
-                            if prediction_data["status"] == "succeeded":
-                                output = prediction_data["output"]
-                                break
-                            if prediction_data["status"] == "failed":
-                                logs = prediction_data["logs"]
-                                error = prediction_data["error"]
-                                await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
-                                return
-                        await asyncio.sleep(2)
-        elif model == "dreamshaper":
-            data = {
-                "version": "6197db9cdf865a7349acaf20a7d20fe657d9c04cc0c478ec2b23565542715b95",
-                "input": {
-                    "prompt": prompt,
-                    "num_outputs": num_outputs,
-                }
-            }
-            headers = {
-                "Authorization": f"Token {REPLICATE_TOKEN}",
-                "Content-Type": "application/json"
-            }
-        
-            async with aiohttp.ClientSession() as session:
-                async with session.post("https://api.replicate.com/v1/predictions", headers=headers, json=data) as response:
-                    response_data = await response.json()
-                    prediction_id = response_data["id"]
-                    prediction_url = f"https://api.replicate.com/v1/predictions/{prediction_id}"
-                
-                    while True:
-                        async with session.get(prediction_url, headers=headers) as prediction_response:
-                            prediction_data = await prediction_response.json()
-                            if prediction_data["status"] == "succeeded":
-                                output = prediction_data["output"]
-                                break
-                            if prediction_data["status"] == "failed":
-                                logs = prediction_data["logs"]
-                                error = prediction_data["error"]
-                                await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
-                                return
-                        await asyncio.sleep(2)
-        elif model == "deliberate":
-            data = {
-                "version": "8e6663822bbbc982648e3c34214cf42d29fe421b2620cc33d8bda767fc57fe5a",
-                "input": {
-                    "prompt": prompt,
-                    "num_outputs": num_outputs,
-                }
-            }
-            headers = {
-                "Authorization": f"Token {REPLICATE_TOKEN}",
-                "Content-Type": "application/json"
-            }
-        
-            async with aiohttp.ClientSession() as session:
-                async with session.post("https://api.replicate.com/v1/predictions", headers=headers, json=data) as response:
-                    print(response)
-                    response_data = await response.json()
-                    prediction_id = response_data["id"]
-                    prediction_url = f"https://api.replicate.com/v1/predictions/{prediction_id}"
-                
-                    while True:
-                        async with session.get(prediction_url, headers=headers) as prediction_response:
-                            prediction_data = await prediction_response.json()
-                            if prediction_data["status"] == "succeeded":
-                                output = prediction_data["output"]
-                                break
-                            if prediction_data["status"] == "failed":
-                                logs = prediction_data["logs"]
-                                error = prediction_data["error"]
-                                await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
-                                return
-                        await asyncio.sleep(2)
-        elif model == "firefly":
-            print(os.environ['FIREFLY_KEY'])
-            firefly_client = await pyfirefly.Firefly(os.environ['FIREFLY_KEY'])
-            final = []
-            for i in range(num_outputs):
-                img = ImageOptions(image_styles = firefly_client.image_styles)
-                output = await firefly_client.text_to_image(prompt, **img.options)
-                final.append(discord.File(output.image, f'image{i+1}.jpg'))
-            await ctx.respond(f"{ctx.user.mention} requested an image with these settings:\n**{prompt}** | model: **{model}**", files=final, view=DestroyItem())
+        model_id = models.models['img_models'][model]['id']
+        url = "https://image-webui.hop.sh/api"
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        data = {
+            "prompt": prompt,
+            "count": num_outputs,
+            "size_ratio": "1:1",
+            "model": model,
+            "key": ""
+        }
+        encoded_data = urllib.parse.urlencode(data)
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, headers=headers, data=encoded_data) as response:
+                output = await response.json()
+        if "error" in output:
+            ctx.respond(f"An error occurred: {output['error']}", ephemeral=True)
             return
         final = []
         for i, url in enumerate(output):
