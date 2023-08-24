@@ -18,8 +18,6 @@ import aiohttp
 import BingImageCreator
 import openai
 import models
-#import pyfirefly
-#from pyfirefly.utils import ImageOptions
 import psutil
 import sys
 import urllib.parse
@@ -40,7 +38,6 @@ DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 BARD_KEY = os.getenv('BARD_KEY')
 BARD_KEY_TS = os.getenv('BARD_KEY_TS')
 REPLICATE_TOKEN = os.getenv('REPLICATE_TOKEN')
-#firefly_client = "x"
 video_settings = {}
 
 async def get_drafts(info):
@@ -773,7 +770,7 @@ async def help(ctx):
         "\n"
         "**/drafts**: Get all 3 drafts.\n"
         "\n"
-        "**/imagine**: Generate an image using Bing Dall-e 2, Kandinsky, or Firefly.\n"
+        "**/imagine**: Generate an image using Bing Image Creator, Kandinsky, SDXL, and more!\n"
         "\n"
         "**/audio**: Generate music with riffusion.\n"
         "\n"
@@ -808,11 +805,6 @@ class TextSettingsView(discord.ui.View):
                 label=models.models["text_models"]["chatgpt"]["showname"],
                 description=models.models["text_models"]["chatgpt"]["description"],
                 value="chatgpt"
-            ),
-            discord.SelectOption(
-                label=models.models["text_models"]["gpt4"]["showname"],
-                description=models.models["text_models"]["gpt4"]["description"],
-                value="gpt4"
             ),
             discord.SelectOption(
                 label=models.models["text_models"]["gpt3"]["showname"],
@@ -896,13 +888,13 @@ class TextSettingsView(discord.ui.View):
                 value="if"
             ),
             discord.SelectOption(
-                label=models.models["img_models"]["firefly"]["showname"],
-                description=models.models["img_models"]["firefly"]["description"],
+                label=models.models["img_models"]["stable diffusion 1.5"]["showname"],
+                description=models.models["img_models"]["stable diffusion 1.5"]["description"],
                 value="firefly"
             ),
             discord.SelectOption(
-                label=models.models["img_models"]["stable diffusion"]["showname"],
-                description=models.models["img_models"]["stable diffusion"]["description"],
+                label=models.models["img_models"]["stable diffusion 2.1"]["showname"],
+                description=models.models["img_models"]["stable diffusion 2.1"]["description"],
                 value="stable diffusion"
             ),
             discord.SelectOption(
@@ -966,11 +958,6 @@ class TextSettingsView(discord.ui.View):
                 label=models.models["video_models"]["567w"]["showname"],
                 description=models.models["video_models"]["567w"]["description"],
                 value="567w"
-            ),
-            discord.SelectOption(
-                label=models.models["video_models"]["xl"]["showname"],
-                description=models.models["video_models"]["xl"]["description"],
-                value="xl"
             ),
         ],
     row=4)

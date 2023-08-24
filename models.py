@@ -23,18 +23,9 @@ models = {
             "enabled": True,
         },
         "chatgpt": {
-            "name": "gpt-3.5-turbo-16k-poe",
+            "name": "gpt-3.5-turbo",
             "showname": "ChatGPT",
             "description": "The normal and cheapest OpenAI language model.",
-            "type": "openai",
-            "url": "https://chimeragpt.adventblocks.cc/api/v1",
-            "key": os.environ['CHIMERA_KEY'],
-            "enabled": False,
-        },
-        "gpt4": {
-            "name": "gpt-4-poe",
-            "showname": "GPT-4",
-            "description": "OpenAI's best language model.",
             "type": "openai",
             "url": "https://chimeragpt.adventblocks.cc/api/v1",
             "key": os.environ['CHIMERA_KEY'],
@@ -95,7 +86,7 @@ models = {
             "enabled": True,
         },
         "claude": {
-            "name": "claude-2-100k",
+            "name": "claude-2",
             "showname": "Claude 2",
             "type": "openai",
             "description": "Anthropics Claude 2 model with 100k tokens of context.",
