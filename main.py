@@ -280,7 +280,7 @@ async def imagine(
             return
         final = []
         for i, url in enumerate(output):
-            response = requests.get(url)
+            response = requests.get(url["url"])
             image_bytes = io.BytesIO(response.content)
             final.append(discord.File(image_bytes, f'image{i+1}.jpg'))
         await ctx.respond(f"{ctx.user.mention} requested an image with these settings:\n**{prompt}** | model: **{model}**", files=final, view=DestroyItem())
