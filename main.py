@@ -284,7 +284,9 @@ async def imagine(
             return
         final = []
         for i, url in enumerate(output):
-            response = requests.get(url["url"])
+            url = url["url"]
+            await generator.filter(url)
+            response = requests.get(url)
             image_bytes = io.BytesIO(response.content)
             final.append(discord.File(image_bytes, f'image{i+1}.jpg'))
         await ctx.respond(f"{ctx.user.mention} requested an image with these settings:\n**{prompt}** | model: **{model}**", files=final, view=DestroyItem())
@@ -426,6 +428,66 @@ async def audio(
         await ctx.respond(f"Something went wrong: {error}. Please try again.", ephemeral=True)
         with open('errors.txt', 'a') as f:
             traceback.print_exc(file=f)
+
+
+# --------- EDIT ---------
+@bot.slash_command(description="Edit an image using img2img")
+@option(name="prompt", required=True, "Concept to add")
+@option(name="image", required=True, description="Image to edit")
+@option(name="neg_prompt", required=False, "Concept to remove")
+@option(name="description", required=False, "Describe your prompt in detail")
+async def edit(
+    ctx: discord.ApplicationContext,
+    prompt: str,
+    image: discord.Attachment,
+    neg_prompt: str="",
+    description: str="",
+):
+    data = {
+        "version": "8538f75787808298668face1fadd55a2af9d5c2ef43953092959cc2a273dc68a",
+        "input": {
+            "concept_to_add": prompt,
+            "concept_to_remove": neg_prompt,
+            "target_prompt": description,
+            "input_image": image.url,
+        }
+    }
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post("https://api.replicate.com/v1/predictions", headers=headers, json=data) as response:
+                response_data = await response.json()
+                prediction_id = response_data["id"]
+                prediction_url = f"https://api.replicate.com/v1/predictions/{prediction_id}"
+            
+                while True:
+                    async with session.get(prediction_url, headers=headers) as prediction_response:
+                        prediction_data = await prediction_response.json()
+                        if prediction_data["status"] == "succeeded":
+                            output = prediction_data["output"]
+                            break
+                        if prediction_data["status"] == "failed":
+                            logs = prediction_data["logs"]
+                            error = prediction_data["error"]
+                            if len(logs) > 1500:
+                                await ctx.respond(f"### The model failed generating. \n### Error: \n```{error}```\n###")
+                            await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
+                            return
+                    await asyncio.sleep(2)
+            async with session.get(image_url) as image_response:
+                if image_response.status == 200:
+                    image_data = await image_response.read()
+                    await ctx.respond(f"{ctx.user.mention} requested an upscaled image with these settings:\n> positive prompt: **{prompt}** | negative prompt: **{neg_prompt}** | description: **{description}**\n{output}")
+                else:
+                    await ctx.respond("Failed getting image... Please try again.")
+    except Exception as error:
+        await ctx.respond(f"Something went wrong: {error}. Please try again.", ephemeral=True)
+        with open('errors.txt', 'a') as f:
+            traceback.print_exc(file=f)
+
 
 
 # --------- VIDEO ---------

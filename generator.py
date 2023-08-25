@@ -133,3 +133,37 @@ async def replicate(message, bot, SETTINGS_FILE):
             user_settings[str(message.author.id)]["last_use"] = "response"
             await loader.save_file(user_settings, SETTINGS_FILE)
             await sender.send(message, response, False, message.reply)
+
+async def filter(url):
+    data = {
+        "version": models.models["text_models"][user_settings[str(message.author.id)]["text_model"]]["url"],
+        "input": {
+            "prompt": msg_content,
+        }
+    }
+    headers = {
+        "Authorization": f"Token {models.models['text_models'][user_settings[str(message.author.id)]['text_model']]['key']}",
+        "Content-Type": "application/json"
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post("https://api.replicate.com/v1/predictions", headers=headers, json=data) as response:
+            response_data = await response.json()
+            prediction_id = response_data["id"]
+            prediction_url = f"https://api.replicate.com/v1/predictions/{prediction_id}"
+        
+            while True:
+                async with session.get(prediction_url, headers=headers) as prediction_response:
+                    fullinfo = await prediction_response.json()
+                    if fullinfo["status"] == "succeeded":
+                        response = fullinfo["output"]
+                        response = ''.join(response)
+                        break
+                    if fullinfo["status"] == "failed":
+                        logs = fullinfo["logs"]
+                        error = fullinfo["error"]
+                        await message.reply(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
+                        return
+    data = response[0]
+    print(data)
+    return
