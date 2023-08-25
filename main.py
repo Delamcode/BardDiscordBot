@@ -272,11 +272,13 @@ async def imagine(
         }
         encoded_data = urllib.parse.urlencode(data)
 
+        timeout_seconds = 120
+
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, headers=headers, data=encoded_data) as response:
+            async with session.post(url, headers=headers, data=encoded_data, timeout=timeout_seconds) as response:
                 output = await response.json()
         if "error" in output:
-            ctx.respond(f"An error occurred: {output['error']}", ephemeral=True)
+            ctx.respond(f"An error occurred: {output['error']} - API error", ephemeral=True)
             return
         final = []
         for i, url in enumerate(output):
@@ -286,7 +288,7 @@ async def imagine(
         await ctx.respond(f"{ctx.user.mention} requested an image with these settings:\n**{prompt}** | model: **{model}**", files=final, view=DestroyItem())
 
     except Exception as error:
-        await ctx.respond(f"An error occurred: {error}.", ephemeral=True)
+        await ctx.respond(f"An error occurred: {error}. - Bot error", ephemeral=True)
         with open('errors.txt', 'a') as f:
             traceback.print_exc(file=f)
 
