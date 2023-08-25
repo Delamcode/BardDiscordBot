@@ -240,12 +240,14 @@ async def reset(
 @bot.slash_command(description="Generate images")
 @option(name="prompt", required=True, description="Prompt to generate")
 @option(name="model", required=False, choices=['bing', 'kandinsky', 'if', 'stable diffusion 1.5', 'stable diffusion 2.1', 'dreamshaper', 'deliberate', 'SDXL', 'dalle'])
-@option(name="num_outputs", required=False, min_value=1, max_value=10, description="Number of outputs - bing is always 4")
+@option(name="num_outputs", required=False, min_value=1, max_value=10, description="Number of outputs")
+@option(name="ratio", required=False, choices=['1:1', '16:9', '9:16', '3:2', '2:3'])
 async def imagine(
     ctx: discord.ApplicationContext,
     prompt: str,
     model: str,
     num_outputs: int=4,
+    ratio: str='1:1',
 ):
     try:
         user_settings = await loader.load_file(SETTINGS_FILE)
@@ -266,7 +268,7 @@ async def imagine(
         data = {
             "prompt": prompt,
             "count": num_outputs,
-            "size_ratio": "1:1",
+            "size_ratio": ratio,
             "model": model_id,
             "key": ""
         }
