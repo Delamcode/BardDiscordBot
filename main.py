@@ -267,7 +267,7 @@ async def imagine(
             "prompt": prompt,
             "count": num_outputs,
             "size_ratio": "1:1",
-            "model": model,
+            "model": model_id,
             "key": ""
         }
         encoded_data = urllib.parse.urlencode(data)
@@ -278,7 +278,7 @@ async def imagine(
             async with session.post(url, headers=headers, data=encoded_data, timeout=timeout_seconds) as response:
                 output = await response.json()
         if "error" in output:
-            ctx.respond(f"An error occurred: {output['error']} - API error", ephemeral=True)
+            await ctx.respond(f"An error occurred: {output['error']} - API error", ephemeral=True)
             return
         final = []
         for i, url in enumerate(output):
