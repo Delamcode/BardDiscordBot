@@ -432,10 +432,10 @@ async def audio(
 
 # --------- EDIT ---------
 @bot.slash_command(description="Edit an image using img2img")
-@option(name="prompt", required=True, "Concept to add")
+@option(name="prompt", required=True, description="Concept to add")
 @option(name="image", required=True, description="Image to edit")
-@option(name="neg_prompt", required=False, "Concept to remove")
-@option(name="description", required=False, "Describe your prompt in detail")
+@option(name="neg_prompt", required=False, description="Concept to remove")
+@option(name="description", required=False, description="Describe your prompt in detail")
 async def edit(
     ctx: discord.ApplicationContext,
     prompt: str,
