@@ -9,3 +9,7 @@
 __pycache__/loader.cpython-38.pyc
 __pycache__/sender.cpython-38.pyc
 .vs/BardDiscordBot/FileContentIndex/930dd5ff-b4ac-4a2a-9941-e44963586521.vsidx
+__pycache__/generator.cpython-38.pyc
+__pycache__/keep_alive.cpython-38.pyc
+.gitignore
+__pycache__/models.cpython-38.pyc

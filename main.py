@@ -478,7 +478,7 @@ async def edit(
                             await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
                             return
                     await asyncio.sleep(2)
-            async with session.get(image_url) as image_response:
+            async with session.get(output[0]) as image_response:
                 if image_response.status == 200:
                     image_data = await image_response.read()
                     await ctx.respond(f"{ctx.user.mention} requested an upscaled image with these settings:\n> positive prompt: **{prompt}** | negative prompt: **{neg_prompt}** | description: **{description}**\n{output}")
