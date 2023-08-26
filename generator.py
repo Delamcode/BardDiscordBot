@@ -165,6 +165,6 @@ async def filter(url, key):
                         error = fullinfo["error"]
                         await message.reply(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
                         return
-    data = response[0]
+    data = response
     print(data)
     return
