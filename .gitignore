@@ -13,3 +13,11 @@ __pycache__/generator.cpython-38.pyc
 __pycache__/keep_alive.cpython-38.pyc
 .gitignore
 __pycache__/models.cpython-38.pyc
+__pycache__/generator.cpython-310.pyc
+.gitignore
+__pycache__/loader.cpython-310.pyc
+.gitignore
+__pycache__/keep_alive.cpython-310.pyc
+__pycache__/models.cpython-310.pyc
+.gitignore
+__pycache__/sender.cpython-310.pyc
