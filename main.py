@@ -28,7 +28,7 @@ STATS_FILE = 'stats.json'
 SETTINGS_FILE = 'settings.json'
 
 announce = 1099628767581831259
-version = "v1.2a"
+version = "v1.2b"
 
 user_bards = {}
 
