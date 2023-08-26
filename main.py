@@ -443,6 +443,7 @@ async def edit(
     neg_prompt: str="",
     description: str="",
 ):
+    await ctx.respond(f"Generating:\n> {prompt}\n>> This will take a while.", ephemeral=True)
     data = {
         "version": "8538f75787808298668face1fadd55a2af9d5c2ef43953092959cc2a273dc68a",
         "input": {
