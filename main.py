@@ -24,8 +24,8 @@ import urllib.parse
 
 load_dotenv()
 
-STATS_FILE = 'stats.json'
-SETTINGS_FILE = 'settings.json'
+STATS_FILE = 'settings/stats.json'
+SETTINGS_FILE = 'settings/settings.json'
 
 announce = 1099628767581831259
 version = "v1.2b"
