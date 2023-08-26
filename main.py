@@ -285,7 +285,7 @@ async def imagine(
         final = []
         for i, url in enumerate(output):
             url = url["url"]
-            await generator.filter(url)
+            await generator.filter(url, REPLICATE_TOKEN)
             response = requests.get(url)
             image_bytes = io.BytesIO(response.content)
             final.append(discord.File(image_bytes, f'image{i+1}.jpg'))

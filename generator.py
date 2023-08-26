@@ -134,15 +134,16 @@ async def replicate(message, bot, SETTINGS_FILE):
             await loader.save_file(user_settings, SETTINGS_FILE)
             await sender.send(message, response, False, message.reply)
 
-async def filter(url):
+async def filter(url, key):
     data = {
-        "version": models.models["text_models"][user_settings[str(message.author.id)]["text_model"]]["url"],
+        "version": "47b84bd3382414fb13d8b0d54aa8f5f61b4dbcc4730ce8fa9e0736c5db9ecb3d",
         "input": {
-            "prompt": msg_content,
+            "image": url,
+            "mode": "fast",
         }
     }
     headers = {
-        "Authorization": f"Token {models.models['text_models'][user_settings[str(message.author.id)]['text_model']]['key']}",
+        "Authorization": f"Token {key}",
         "Content-Type": "application/json"
     }
 
