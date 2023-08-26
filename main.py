@@ -481,7 +481,7 @@ async def edit(
             async with session.get(output) as image_response:
                 if image_response.status == 200:
                     image_data = await image_response.read()
-                    await ctx.respond(f"{ctx.user.mention} requested an upscaled image with these settings:\n> positive prompt: **{prompt}** | negative prompt: **{neg_prompt}** | description: **{description}**\n{output}")
+                    await ctx.respond(f"{ctx.user.mention} requested an edited image image with these settings:\n> positive prompt: **{prompt}** | negative prompt: **{neg_prompt}** | description: **{description}**\n{output}")
                 else:
                     await ctx.respond("Failed getting image... Please try again.")
     except Exception as error:
