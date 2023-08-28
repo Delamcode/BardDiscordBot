@@ -503,6 +503,7 @@ async def edit(
         await ctx.respond(f"Something went wrong: {error}. Please try again.", ephemeral=True)
         with open('errors.txt', 'a') as f:
             traceback.print_exc(file=f)
+        traceback.print_exc()
 
 
 
