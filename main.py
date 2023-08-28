@@ -493,8 +493,7 @@ async def edit(
                             await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
                             return
                     await asyncio.sleep(2)
-            print(output)
-            async with session.get(output) as image_response:
+            async with session.get(output[0]) as image_response:
                 if image_response.status == 200:
                     image_data = await image_response.read()
                     await ctx.respond(f"{ctx.user.mention} requested an edited image image with these settings:\n> positive prompt: **{prompt}** | negative prompt: **{neg_prompt}** | description: **{description}**\n{output}")
@@ -504,7 +503,6 @@ async def edit(
         await ctx.respond(f"Something went wrong: {error}. Please try again.", ephemeral=True)
         with open('errors.txt', 'a') as f:
             traceback.print_exc(file=f)
-        traceback.print_exc()
 
 
 
