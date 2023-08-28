@@ -493,6 +493,7 @@ async def edit(
                             await ctx.respond(f"### The model failed generating. Here are the logs found:\n```{logs}```\n### Error: \n```{error}```")
                             return
                     await asyncio.sleep(2)
+            print(output)
             async with session.get(output) as image_response:
                 if image_response.status == 200:
                     image_data = await image_response.read()
