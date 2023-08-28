@@ -434,25 +434,40 @@ async def audio(
 @bot.slash_command(description="Edit an image using img2img")
 @option(name="prompt", required=True, description="Concept to add")
 @option(name="image", required=True, description="Image to edit")
+@option(name="model", required=False, description="Model to use", choices=['pix2pix', 'ledit'])
 @option(name="neg_prompt", required=False, description="Concept to remove")
 @option(name="description", required=False, description="Describe your prompt in detail")
 async def edit(
     ctx: discord.ApplicationContext,
     prompt: str,
     image: discord.Attachment,
+    model: str="pix2pix",
     neg_prompt: str="",
     description: str="",
 ):
+    if neg_prompt and model=="pix2pix":
+        await ctx.respond("You cannot use the pix2pix model with a description. To use the pix2pix model, only include a prompt and an image.")
+        return
     await ctx.respond(f"Generating:\n> {prompt}\n>> This will take a while.", ephemeral=True)
-    data = {
-        "version": "8538f75787808298668face1fadd55a2af9d5c2ef43953092959cc2a273dc68a",
-        "input": {
-            "concept_to_add": prompt,
-            "concept_to_remove": neg_prompt,
-            "target_prompt": description,
-            "input_image": image.url,
+    if model == "ledit":
+        data = {
+            "version": "8538f75787808298668face1fadd55a2af9d5c2ef43953092959cc2a273dc68a",
+            "input": {
+                "concept_to_add": prompt,
+                "concept_to_remove": neg_prompt,
+                "target_prompt": description,
+                "input_image": image.url,
+            }
         }
-    }
+    elif model == "pix2pix":
+        data = {
+            "version": "30c1d0b916a6f8efce20493f5d61ee27491ab2a60437c13c588468b9810ec23f",
+            "input": {
+                "prompt": prompt,
+                "negative_prompt": neg_prompt,
+                "image": image.url,
+            }
+        }
     headers = {
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json"
