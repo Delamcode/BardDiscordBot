@@ -500,7 +500,7 @@ async def edit(
             async with session.get(output[model]) as image_response:
                 if image_response.status == 200:
                     image_data = await image_response.read()
-                    await ctx.respond(f"{ctx.user.mention} requested an edited image image with these settings:\n> positive prompt: **{prompt}** | negative prompt: **{neg_prompt}** | description: **{description}**\n{output[model]}")
+                    await ctx.respond(f"{ctx.user.mention} requested an edited image image with these settings:\n> positive prompt: **{prompt}** | negative prompt: **{neg_prompt}** | description: **{description}** | model: **{model} |\n{output[model]}")
                 else:
                     await ctx.respond("Failed getting image... Please try again.")
     except Exception as error:
