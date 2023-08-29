@@ -446,7 +446,7 @@ async def edit(
     neg_prompt: str="",
     description: str="",
 ):
-    if description and model=="pix2pix":
+    if description != "" and model=="pix2pix":
         await ctx.respond("You cannot use the pix2pix model with a description. To use the pix2pix model, only include a prompt and an image.")
         return
     await ctx.respond(f"Generating:\n> {prompt}\n>> This will take a while.", ephemeral=True)
