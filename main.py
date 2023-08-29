@@ -295,6 +295,7 @@ async def imagine(
         await ctx.respond(f"An error occurred: {error}. - Bot error", ephemeral=True)
         with open('errors.txt', 'a') as f:
             traceback.print_exc(file=f)
+        traceback.print_exc()
 
 # --------- AUDIO ---------
 @bot.slash_command(description="Generate audio.")
