@@ -21,6 +21,7 @@ import models
 import psutil
 import sys
 import urllib.parse
+from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -236,6 +237,8 @@ async def reset(
     else:
         await ctx.respond("Something went wrong...", ephemeral=True)
 
+
+last_command_time = {}
 # --------- IMAGINE---------
 @bot.slash_command(description="Generate images")
 @option(name="prompt", required=True, description="Prompt to generate")
@@ -249,6 +252,13 @@ async def imagine(
     num_outputs: int=4,
     ratio: str='1:1',
 ):
+    user_id = ctx.user.id
+    if user_id in last_command_time:
+        time_difference = datetime.now() - last_command_time[user_id]
+        if time_difference < timedelta(minutes=2):
+            await ctx.respond(f"Please wait for 2 minutes between each use of the 'imagine' command.", ephemeral=True)
+            return
+    last_command_time[user_id] = datetime.now()
     try:
         user_settings = await loader.load_file(SETTINGS_FILE)
         stats = {"stats": str(int((await loader.load_file(STATS_FILE)).get("stats", "0")) + 1)}
