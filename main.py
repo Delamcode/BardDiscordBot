@@ -274,7 +274,7 @@ async def imagine(
         }
         encoded_data = urllib.parse.urlencode(data)
 
-        timeout_seconds = 120
+        timeout_seconds = 2400
 
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers=headers, data=encoded_data, timeout=timeout_seconds) as response:
