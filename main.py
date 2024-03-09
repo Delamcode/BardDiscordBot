@@ -16,9 +16,12 @@ DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 BARD_COOKIES = os.getenv('BARD_COOKIES')
 REPLICATE_TOKEN = os.getenv('REPLICATE_TOKEN')
 BARD_COOKIES = ast.literal_eval(BARD_COOKIES)
+PROXY_TOKEN = os.getenv('PROXY_TOKEN')
 
 
 user_history = {}
+
+GeminiClient = Gemini(cookies=BARD_COOKIES, proxies=f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012", timeout=30)
 
 bot = discord.Bot(intents=discord.Intents.default())
 
@@ -61,28 +64,13 @@ async def on_message(message):
         try:
             async with message.channel.typing():
                 await message.add_reaction("🕥")
-                if str(message.author.id) not in user_history:
-                    user_history.setdefault(str(message.author.id), Gemini(cookies=BARD_COOKIES))
                 msg_content = await meta(message, bot)
-                response = user_history[str(message.author.id)].generate_content(msg_content)
+                response = GeminiClient.generate_content(msg_content)
                 await message.reply(f"{response.response_dict['candidates']['text']}")
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("😸")
         except Exception as error:
             await message.reply(f"An error occurred: {error}.")
             traceback.print_exc()
-
-
-@bot.slash_command(description="Reset your conversation.")
-async def reset(ctx: discord.ApplicationContext):
-    if str(ctx.user.id) not in user_history:
-        await ctx.respond("Nothing to reset...", ephemeral=True)
-        return
-    try:
-        del user_history[str(ctx.user.id)]
-        await ctx.respond("Reset complete!", ephemeral=True)
-    except Exception as error:
-        await ctx.respond(f"An error occurred: {error}.", ephemeral=True)
-    return
 
 bot.run(bot_token)
