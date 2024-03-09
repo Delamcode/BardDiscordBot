@@ -4,6 +4,6 @@ python_dotenv
 aiohttp
 BingImageCreator
 openai
-GoogleBard
+python-gemini-api
 flask
 psutil
