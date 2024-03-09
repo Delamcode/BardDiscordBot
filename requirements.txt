@@ -7,3 +7,4 @@ openai
 python-gemini-api
 flask
 psutil
+claude-api

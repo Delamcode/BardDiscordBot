@@ -4,6 +4,7 @@ import discord
 import os
 import traceback
 import ast
+import datetime
 
 load_dotenv()
 
@@ -15,6 +16,9 @@ DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 BARD_COOKIES = os.getenv('BARD_COOKIES')
 REPLICATE_TOKEN = os.getenv('REPLICATE_TOKEN')
 BARD_COOKIES = ast.literal_eval(BARD_COOKIES)
+
+
+user_history = {}
 
 bot = discord.Bot(intents=discord.Intents.default())
 
@@ -52,18 +56,33 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if bot.user in message.mentions and '@everyone' not in message.content and '@here' not in message.content:
-        print(message.author)
+        time = datetime.datetime.now().time().strftime("%H:%M:%S")
+        print(time, message.author.id, message.author, "Message")
         try:
             async with message.channel.typing():
                 await message.add_reaction("🕥")
-                GeminiClient = Gemini(cookies=BARD_COOKIES)
+                if str(message.author.id) not in user_history:
+                    user_history.setdefault(str(message.author.id), Gemini(cookies=BARD_COOKIES))
                 msg_content = await meta(message, bot)
-                response = GeminiClient.generate_content(msg_content)
+                response = user_history[str(message.author.id)].generate_content(msg_content)
                 await message.reply(f"{response.response_dict['candidates']['text']}")
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("😸")
         except Exception as error:
             await message.reply(f"An error occurred: {error}.")
             traceback.print_exc()
+
+
+@bot.slash_command(description="Reset your conversation.")
+async def reset(ctx: discord.ApplicationContext):
+    if str(ctx.user.id) not in user_history:
+        await ctx.respond("Nothing to reset...", ephemeral=True)
+        return
+    try:
+        del user_history[str(ctx.user.id)]
+        await ctx.respond("Reset complete!", ephemeral=True)
+    except Exception as error:
+        await ctx.respond(f"An error occurred: {error}.", ephemeral=True)
+    return
 
 bot.run(bot_token)
