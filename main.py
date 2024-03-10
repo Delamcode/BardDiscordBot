@@ -32,7 +32,12 @@ async def meta(message, bot):
     attachments = []
     if message.attachments:
         for attachment in message.attachments:
-            attached = requests.get(attachment.url)
+            async with aiohttp.ClientSession() as session:
+                async with session.get(attachment.url) as response:
+                    if response.status == 200:
+                        attached = await response.read()
+                    else:
+                        attached =  None
             try:
                 decoded = attached.content.decode('utf-8')
                 attachments.append(f"File \"{attachment.filename}\" is attached: {decoded} End of file \"{attachment.filename}\"")
