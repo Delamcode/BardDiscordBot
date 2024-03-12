@@ -21,7 +21,8 @@ PROXY_TOKEN = os.getenv('PROXY_TOKEN')
 
 user_history = {}
 
-GeminiClient = Gemini(cookies=BARD_COOKIES, proxies=f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012", timeout=30)
+GeminiClient = Gemini(cookies=BARD_COOKIES, proxies={"http": f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012", "https": f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012"}, timeout=30)
+await GeminiClient.async_init()
 
 bot = discord.Bot(intents=discord.Intents.default())
 
@@ -70,7 +71,7 @@ async def on_message(message):
             async with message.channel.typing():
                 await message.add_reaction("🕥")
                 msg_content = await meta(message, bot)
-                response = GeminiClient.generate_content(msg_content)
+                response = await GeminiClient.generate_content(msg_content)
                 await message.reply(f"{response.response_dict['candidates']['text']}")
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("😸")
