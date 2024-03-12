@@ -21,7 +21,8 @@ PROXY_TOKEN = os.getenv('PROXY_TOKEN')
 
 user_history = {}
 
-GeminiClient = Gemini(cookies=BARD_COOKIES, proxies={"http": f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012", "https": f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012"}, timeout=30)
+GeminiClient = Gemini(cookies=BARD_COOKIES, timeout=30)
+#  proxies={"http": f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012", "https": f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012"},
 
 bot = discord.Bot(intents=discord.Intents.default())
 
