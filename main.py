@@ -22,7 +22,7 @@ PROXY_TOKEN = os.getenv('PROXY_TOKEN')
 user_history = {}
 
 GeminiClient = Gemini(cookies=BARD_COOKIES, proxies={"http": f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012", "https": f"http://{PROXY_TOKEN}:@smartproxy.crawlbase.com:8012"}, timeout=30)
-await GeminiClient.async_init()
+GeminiClient.async_init()
 
 bot = discord.Bot(intents=discord.Intents.default())
 
